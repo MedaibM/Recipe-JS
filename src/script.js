@@ -155,27 +155,51 @@ function addCart(ingredient) {
         cartIngredients = document.getElementById("cart")
     }
 
-    const cartButton = document.createElement("button")
-    cartButton.setAttribute("class", "button-cart");
-    cartButton.innerHTML = "X";
-
     const cartPagraph = document.createElement("p");
     cartPagraph.setAttribute("class", "cart-pararaph")
     cartPagraph.innerHTML = ingredient;
 
+    const cartButton = document.createElement("button")
+    cartButton.setAttribute("class", "button-cart");
+    cartButton.addEventListener('click', function () {
+        deleteItem(ingredient);
+    })
+    cartButton.innerHTML = "X";
+
     const cartWrapper = document.createElement("div");
     cartWrapper.setAttribute("id", "cart-wrapper");
+    cartWrapper.setAttribute("class", "cart-wrapper");
 
-
-    cartWrapper.appendChild(cartPagraph);
     cartWrapper.appendChild(cartButton);
+    cartWrapper.appendChild(cartPagraph);
     cartIngredients.appendChild(cartWrapper);
 
     const resultWrapper = document.getElementById("result-wrapper");
     resultWrapper.appendChild(cartIngredients);
     resultWrapper.style.width = "80%";
 }
-//
+
+function deleteItem(ingredient) {
+    const cartItems = document.getElementsByClassName("cart-wrapper");
+    if (cartItems.length === 1) {
+        const cartcontainer = document.getElementById("cart");
+        cartcontainer.remove();
+    }
+    else {
+        for (let i = 0; i < cartItems.length; i++) {
+            const currentItem = cartItems[i];
+            for (let i = 0; i < currentItem.children.length; i++) {
+                if (currentItem.children[i].tagName.startsWith("P")) {
+                    if (currentItem.children[i].innerHTML === ingredient) {
+                        currentItem.remove();
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 async function callApi(url) {
     return await fetch(url)
         .then(response => response.json())
